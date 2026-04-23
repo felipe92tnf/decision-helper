@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Decision {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  status      String      @default("draft")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  criteria    Criterion[]
+  options     Option[]
+}
+
+model Criterion {
+  id         String   @id @default(cuid())
+  name       String
+  weight     Int
+  decisionId String
+  decision   Decision @relation(fields: [decisionId], references: [id], onDelete: Cascade)
+  scores     Score[]
+}
+
+model Option {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  decisionId  String
+  decision    Decision @relation(fields: [decisionId], references: [id], onDelete: Cascade)
+  scores      Score[]
+}
+
+model Score {
+  id          String @id @default(cuid())
+  value       Int
+  optionId    String
+  criterionId String
+  option      Option    @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  criterion   Criterion @relation(fields: [criterionId], references: [id], onDelete: Cascade)
+
+  @@unique([optionId, criterionId])
+}
