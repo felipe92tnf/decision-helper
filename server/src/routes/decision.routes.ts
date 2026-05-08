@@ -1,18 +1,19 @@
 import { Router } from "express";
 import {
   getDecisions,
-  getDecision,
+  getDecisionById,
   createDecision,
-  updateDecision,
   deleteDecision,
-} from "../controllers/decision.controller";
+} from "../controllers/decision.controller.js";
 
 const router = Router();
 
 router.get("/", getDecisions);
-router.get("/:id", getDecision);
+
+router.get("/:id", getDecisionById);
+
 router.post("/", createDecision);
-router.put("/:id", updateDecision);
+
 router.delete("/:id", deleteDecision);
 
 export default router;

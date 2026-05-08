@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import * as scoreService from "../services/score.service";
+import * as scoreService from "../services/score.service.js";
 
 export const createScore = async (req: Request, res: Response) => {
   try {
@@ -14,13 +14,13 @@ export const createScore = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "value debe ser número" });
     }
 
-    const score = await scoreService.createScore(optionId, {
+    const score = await scoreService.createOrUpdateScore(optionId as string, {
       criterionId,
       value,
     });
 
     res.status(201).json(score);
   } catch (error) {
-    res.status(500).json({ message: "Error al crear score", error });
+    res.status(500).json({ message: "Error al guardar score", error });
   }
 };

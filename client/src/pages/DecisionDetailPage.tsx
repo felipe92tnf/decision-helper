@@ -49,8 +49,18 @@ export default function DecisionDetailPage() {
   const [results, setResults] = useState<Results | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // criterio
   const [criterionName, setCriterionName] = useState("");
   const [criterionWeight, setCriterionWeight] = useState(1);
+
+  // opción
+  const [optionName, setOptionName] = useState("");
+  const [optionDescription, setOptionDescription] = useState("");
+
+  // score
+  const [selectedOptionId, setSelectedOptionId] = useState("");
+  const [selectedCriterionId, setSelectedCriterionId] = useState("");
+  const [scoreValue, setScoreValue] = useState(1);
 
   const loadDecision = () => {
     fetch(`http://localhost:3000/api/decisions/${id}`)
@@ -76,6 +86,7 @@ export default function DecisionDetailPage() {
     refreshPageData();
   }, [id]);
 
+  // crear criterio
   const handleCreateCriterion = async (event: FormEvent) => {
     event.preventDefault();
 
@@ -105,6 +116,7 @@ export default function DecisionDetailPage() {
 
       setCriterionName("");
       setCriterionWeight(1);
+
       refreshPageData();
     } catch (error) {
       console.error(error);
@@ -112,16 +124,98 @@ export default function DecisionDetailPage() {
     }
   };
 
-  if (loading) return <p style={{ padding: "30px" }}>Cargando detalle...</p>;
-  if (!decision) return <p>Decisión no encontrada</p>;
+  // crear opción
+  const handleCreateOption = async (event: FormEvent) => {
+    event.preventDefault();
+
+    if (!optionName.trim()) {
+      alert("El nombre de la opción es obligatorio");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/decisions/${id}/options`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: optionName,
+            description: optionDescription,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al crear opción");
+      }
+
+      setOptionName("");
+      setOptionDescription("");
+
+      refreshPageData();
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo crear la opción");
+    }
+  };
+
+  // crear o actualizar score
+  const handleCreateScore = async (event: FormEvent) => {
+    event.preventDefault();
+
+    if (!selectedOptionId || !selectedCriterionId) {
+      alert("Selecciona opción y criterio");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/options/${selectedOptionId}/scores`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            criterionId: selectedCriterionId,
+            value: Number(scoreValue),
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al crear puntuación");
+      }
+
+      setScoreValue(1);
+
+      refreshPageData();
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo guardar la puntuación");
+    }
+  };
+
+  if (loading) {
+    return <p style={{ padding: "30px" }}>Cargando detalle...</p>;
+  }
+
+  if (!decision) {
+    return <p>Decisión no encontrada</p>;
+  }
 
   return (
     <div style={{ padding: "40px", fontFamily: "Arial", maxWidth: "900px" }}>
       <Link to="/">← Volver</Link>
 
       <h1>{decision.title}</h1>
+
       <p>{decision.description}</p>
 
+      {/* añadir criterio */}
       <section
         style={{
           border: "1px solid #ddd",
@@ -136,17 +230,22 @@ export default function DecisionDetailPage() {
           <div style={{ marginBottom: "10px" }}>
             <label>Nombre</label>
             <br />
+
             <input
               value={criterionName}
               onChange={(event) => setCriterionName(event.target.value)}
               placeholder="Ej: Precio"
-              style={{ width: "100%", padding: "10px" }}
+              style={{
+                width: "100%",
+                padding: "10px",
+              }}
             />
           </div>
 
           <div style={{ marginBottom: "10px" }}>
             <label>Peso</label>
             <br />
+
             <input
               type="number"
               min="1"
@@ -155,7 +254,10 @@ export default function DecisionDetailPage() {
               onChange={(event) =>
                 setCriterionWeight(Number(event.target.value))
               }
-              style={{ width: "100%", padding: "10px" }}
+              style={{
+                width: "100%",
+                padding: "10px",
+              }}
             />
           </div>
 
@@ -163,6 +265,157 @@ export default function DecisionDetailPage() {
         </form>
       </section>
 
+      {/* añadir opción */}
+      <section
+        style={{
+          border: "1px solid #ddd",
+          padding: "20px",
+          borderRadius: "10px",
+          marginTop: "20px",
+        }}
+      >
+        <h2>Añadir opción</h2>
+
+        <form onSubmit={handleCreateOption}>
+          <div style={{ marginBottom: "10px" }}>
+            <label>Nombre</label>
+            <br />
+
+            <input
+              value={optionName}
+              onChange={(event) => setOptionName(event.target.value)}
+              placeholder="Ej: Asus Zenbook"
+              style={{
+                width: "100%",
+                padding: "10px",
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: "10px" }}>
+            <label>Descripción</label>
+            <br />
+
+            <textarea
+              value={optionDescription}
+              onChange={(event) =>
+                setOptionDescription(event.target.value)
+              }
+              placeholder="Ej: 16GB RAM, buena batería"
+              style={{
+                width: "100%",
+                padding: "10px",
+              }}
+            />
+          </div>
+
+          <button type="submit">Crear opción</button>
+        </form>
+      </section>
+
+      {/* añadir score */}
+      <section
+        style={{
+          border: "1px solid #ddd",
+          padding: "20px",
+          borderRadius: "10px",
+          marginTop: "20px",
+        }}
+      >
+        <h2>Añadir puntuación</h2>
+
+        {decision.options.length === 0 ||
+        decision.criteria.length === 0 ? (
+          <p>
+            Necesitas al menos una opción y un criterio.
+          </p>
+        ) : (
+          <form onSubmit={handleCreateScore}>
+            <div style={{ marginBottom: "10px" }}>
+              <label>Opción</label>
+              <br />
+
+              <select
+                value={selectedOptionId}
+                onChange={(event) =>
+                  setSelectedOptionId(event.target.value)
+                }
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                }}
+              >
+                <option value="">
+                  Selecciona una opción
+                </option>
+
+                {decision.options.map((option) => (
+                  <option
+                    key={option.id}
+                    value={option.id}
+                  >
+                    {option.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ marginBottom: "10px" }}>
+              <label>Criterio</label>
+              <br />
+
+              <select
+                value={selectedCriterionId}
+                onChange={(event) =>
+                  setSelectedCriterionId(event.target.value)
+                }
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                }}
+              >
+                <option value="">
+                  Selecciona un criterio
+                </option>
+
+                {decision.criteria.map((criterion) => (
+                  <option
+                    key={criterion.id}
+                    value={criterion.id}
+                  >
+                    {criterion.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ marginBottom: "10px" }}>
+              <label>Puntuación</label>
+              <br />
+
+              <input
+                type="number"
+                min="1"
+                max="10"
+                value={scoreValue}
+                onChange={(event) =>
+                  setScoreValue(Number(event.target.value))
+                }
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                }}
+              />
+            </div>
+
+            <button type="submit">
+              Guardar puntuación
+            </button>
+          </form>
+        )}
+      </section>
+
+      {/* criterios */}
       <h2>Criterios</h2>
 
       {decision.criteria.length === 0 ? (
@@ -175,6 +428,7 @@ export default function DecisionDetailPage() {
         ))
       )}
 
+      {/* opciones */}
       <h2>Opciones</h2>
 
       {decision.options.length === 0 ? (
@@ -191,6 +445,7 @@ export default function DecisionDetailPage() {
             }}
           >
             <h3>{option.name}</h3>
+
             <p>{option.description}</p>
 
             <h4>Puntuaciones</h4>
@@ -199,9 +454,10 @@ export default function DecisionDetailPage() {
               <p>Sin puntuaciones todavía.</p>
             ) : (
               option.scores.map((score) => {
-                const criterion = decision.criteria.find(
-                  (c) => c.id === score.criterionId
-                );
+                const criterion =
+                  decision.criteria.find(
+                    (c) => c.id === score.criterionId
+                  );
 
                 return (
                   <p key={score.id}>
@@ -214,6 +470,7 @@ export default function DecisionDetailPage() {
         ))
       )}
 
+      {/* resultado */}
       <h2>Resultado</h2>
 
       {results?.recommendedOption ? (
@@ -232,11 +489,13 @@ export default function DecisionDetailPage() {
         <p>Todavía no hay resultado.</p>
       )}
 
+      {/* ranking */}
       <h3>Ranking</h3>
 
       {results?.ranking.map((item, index) => (
         <p key={item.id}>
-          {index + 1}. {item.name} - {item.totalScore} puntos
+          {index + 1}. {item.name} -{" "}
+          {item.totalScore} puntos
         </p>
       ))}
     </div>
