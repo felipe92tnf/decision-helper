@@ -33,39 +33,55 @@ export default function DecisionsPage() {
     loadDecisions();
   }, []);
 
-  const handleCreateDecision = async (event: FormEvent) => {
+  const handleCreateDecision = async (
+    event: FormEvent
+  ) => {
     event.preventDefault();
-
+  
+    if (!user) {
+      alert("Debes iniciar sesión");
+      return;
+    }
+  
     if (!title.trim()) {
       alert("El título es obligatorio");
       return;
     }
-
+  
     setCreating(true);
-
+  
     try {
-      const response = await fetch("http://localhost:3000/api/decisions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          description,
-          userId: user.uid,
-        }),
-      });
-
+      const response = await fetch(
+        "http://localhost:3000/api/decisions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            description,
+            userId: user.uid,
+          }),
+        }
+      );
+  
       if (!response.ok) {
-        throw new Error("Error al crear decisión");
+        throw new Error(
+          "Error al crear decisión"
+        );
       }
-
+  
       setTitle("");
       setDescription("");
+  
       loadDecisions();
     } catch (error) {
       console.error(error);
-      alert("No se pudo crear la decisión");
+  
+      alert(
+        "No se pudo crear la decisión"
+      );
     } finally {
       setCreating(false);
     }
