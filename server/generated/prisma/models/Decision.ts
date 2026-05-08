@@ -29,6 +29,7 @@ export type DecisionMinAggregateOutputType = {
   title: string | null
   description: string | null
   status: string | null
+  userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -38,6 +39,7 @@ export type DecisionMaxAggregateOutputType = {
   title: string | null
   description: string | null
   status: string | null
+  userId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -47,6 +49,7 @@ export type DecisionCountAggregateOutputType = {
   title: number
   description: number
   status: number
+  userId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -58,6 +61,7 @@ export type DecisionMinAggregateInputType = {
   title?: true
   description?: true
   status?: true
+  userId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -67,6 +71,7 @@ export type DecisionMaxAggregateInputType = {
   title?: true
   description?: true
   status?: true
+  userId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -76,6 +81,7 @@ export type DecisionCountAggregateInputType = {
   title?: true
   description?: true
   status?: true
+  userId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -158,6 +164,7 @@ export type DecisionGroupByOutputType = {
   title: string
   description: string | null
   status: string
+  userId: string | null
   createdAt: Date
   updatedAt: Date
   _count: DecisionCountAggregateOutputType | null
@@ -188,6 +195,7 @@ export type DecisionWhereInput = {
   title?: Prisma.StringFilter<"Decision"> | string
   description?: Prisma.StringNullableFilter<"Decision"> | string | null
   status?: Prisma.StringFilter<"Decision"> | string
+  userId?: Prisma.StringNullableFilter<"Decision"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Decision"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Decision"> | Date | string
   criteria?: Prisma.CriterionListRelationFilter
@@ -199,6 +207,7 @@ export type DecisionOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   criteria?: Prisma.CriterionOrderByRelationAggregateInput
@@ -213,6 +222,7 @@ export type DecisionWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"Decision"> | string
   description?: Prisma.StringNullableFilter<"Decision"> | string | null
   status?: Prisma.StringFilter<"Decision"> | string
+  userId?: Prisma.StringNullableFilter<"Decision"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Decision"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Decision"> | Date | string
   criteria?: Prisma.CriterionListRelationFilter
@@ -224,6 +234,7 @@ export type DecisionOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.DecisionCountOrderByAggregateInput
@@ -239,6 +250,7 @@ export type DecisionScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"Decision"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Decision"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"Decision"> | string
+  userId?: Prisma.StringNullableWithAggregatesFilter<"Decision"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Decision"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Decision"> | Date | string
 }
@@ -248,6 +260,7 @@ export type DecisionCreateInput = {
   title: string
   description?: string | null
   status?: string
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   criteria?: Prisma.CriterionCreateNestedManyWithoutDecisionInput
@@ -259,6 +272,7 @@ export type DecisionUncheckedCreateInput = {
   title: string
   description?: string | null
   status?: string
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   criteria?: Prisma.CriterionUncheckedCreateNestedManyWithoutDecisionInput
@@ -270,6 +284,7 @@ export type DecisionUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   criteria?: Prisma.CriterionUpdateManyWithoutDecisionNestedInput
@@ -281,6 +296,7 @@ export type DecisionUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   criteria?: Prisma.CriterionUncheckedUpdateManyWithoutDecisionNestedInput
@@ -292,6 +308,7 @@ export type DecisionCreateManyInput = {
   title: string
   description?: string | null
   status?: string
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -301,6 +318,7 @@ export type DecisionUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -310,6 +328,7 @@ export type DecisionUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -319,6 +338,7 @@ export type DecisionCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -328,6 +348,7 @@ export type DecisionMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -337,6 +358,7 @@ export type DecisionMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -391,6 +413,7 @@ export type DecisionCreateWithoutCriteriaInput = {
   title: string
   description?: string | null
   status?: string
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   options?: Prisma.OptionCreateNestedManyWithoutDecisionInput
@@ -401,6 +424,7 @@ export type DecisionUncheckedCreateWithoutCriteriaInput = {
   title: string
   description?: string | null
   status?: string
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   options?: Prisma.OptionUncheckedCreateNestedManyWithoutDecisionInput
@@ -427,6 +451,7 @@ export type DecisionUpdateWithoutCriteriaInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   options?: Prisma.OptionUpdateManyWithoutDecisionNestedInput
@@ -437,6 +462,7 @@ export type DecisionUncheckedUpdateWithoutCriteriaInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   options?: Prisma.OptionUncheckedUpdateManyWithoutDecisionNestedInput
@@ -447,6 +473,7 @@ export type DecisionCreateWithoutOptionsInput = {
   title: string
   description?: string | null
   status?: string
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   criteria?: Prisma.CriterionCreateNestedManyWithoutDecisionInput
@@ -457,6 +484,7 @@ export type DecisionUncheckedCreateWithoutOptionsInput = {
   title: string
   description?: string | null
   status?: string
+  userId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   criteria?: Prisma.CriterionUncheckedCreateNestedManyWithoutDecisionInput
@@ -483,6 +511,7 @@ export type DecisionUpdateWithoutOptionsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   criteria?: Prisma.CriterionUpdateManyWithoutDecisionNestedInput
@@ -493,6 +522,7 @@ export type DecisionUncheckedUpdateWithoutOptionsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   criteria?: Prisma.CriterionUncheckedUpdateManyWithoutDecisionNestedInput
@@ -543,6 +573,7 @@ export type DecisionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   title?: boolean
   description?: boolean
   status?: boolean
+  userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   criteria?: boolean | Prisma.Decision$criteriaArgs<ExtArgs>
@@ -555,6 +586,7 @@ export type DecisionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   title?: boolean
   description?: boolean
   status?: boolean
+  userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["decision"]>
@@ -564,6 +596,7 @@ export type DecisionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   title?: boolean
   description?: boolean
   status?: boolean
+  userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["decision"]>
@@ -573,11 +606,12 @@ export type DecisionSelectScalar = {
   title?: boolean
   description?: boolean
   status?: boolean
+  userId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DecisionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["decision"]>
+export type DecisionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "status" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["decision"]>
 export type DecisionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   criteria?: boolean | Prisma.Decision$criteriaArgs<ExtArgs>
   options?: boolean | Prisma.Decision$optionsArgs<ExtArgs>
@@ -597,6 +631,7 @@ export type $DecisionPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     title: string
     description: string | null
     status: string
+    userId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["decision"]>
@@ -1028,6 +1063,7 @@ export interface DecisionFieldRefs {
   readonly title: Prisma.FieldRef<"Decision", 'String'>
   readonly description: Prisma.FieldRef<"Decision", 'String'>
   readonly status: Prisma.FieldRef<"Decision", 'String'>
+  readonly userId: Prisma.FieldRef<"Decision", 'String'>
   readonly createdAt: Prisma.FieldRef<"Decision", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Decision", 'DateTime'>
 }

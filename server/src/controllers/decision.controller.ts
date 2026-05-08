@@ -6,8 +6,10 @@ export const getDecisions = async (
   res: Response
 ) => {
   try {
+    const userId = req.query.userId as string | undefined;
+
     const decisions =
-      await decisionService.getAllDecisions();
+      await decisionService.getAllDecisions(userId);
 
     res.json(decisions);
   } catch (error) {
@@ -48,7 +50,7 @@ export const createDecision = async (
   res: Response
 ) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, userId } = req.body;
 
     if (!title) {
       return res.status(400).json({
@@ -60,6 +62,7 @@ export const createDecision = async (
       await decisionService.createDecision({
         title,
         description,
+        userId,
       });
 
     res.status(201).json(decision);
@@ -81,8 +84,7 @@ export const deleteDecision = async (
     await decisionService.deleteDecision(id);
 
     res.json({
-      message:
-        "Decisión eliminada correctamente",
+      message: "Decisión eliminada correctamente",
     });
   } catch (error) {
     res.status(500).json({

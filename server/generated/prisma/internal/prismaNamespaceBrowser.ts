@@ -75,6 +75,7 @@ export const DecisionScalarFieldEnum = {
   title: 'title',
   description: 'description',
   status: 'status',
+  userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
