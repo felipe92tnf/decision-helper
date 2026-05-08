@@ -53,10 +53,15 @@ export default function DecisionsPage() {
   };
 
   useEffect(() => {
+    if (authLoading) return;
+  
     if (user) {
       loadDecisions();
+    } else {
+      setDecisions([]);
+      setLoading(false);
     }
-  }, [user]);
+  }, [user, authLoading]);
 
   const handleCreateDecision = async (
     event: FormEvent
