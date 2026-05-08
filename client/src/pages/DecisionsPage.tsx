@@ -11,52 +11,78 @@ type Decision = {
 };
 
 export default function DecisionsPage() {
-  const { user, loading: authLoading, loginWithGoogle, logout } = useAuth();
+  const {
+    user,
+    loading: authLoading,
+    loginWithGoogle,
+    logout,
+  } = useAuth();
 
-  const [decisions, setDecisions] = useState<Decision[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [decisions, setDecisions] = useState<
+    Decision[]
+  >([]);
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [loading, setLoading] =
+    useState(true);
 
-  const [creating, setCreating] = useState(false);
+  const [title, setTitle] =
+    useState("");
+
+  const [description, setDescription] =
+    useState("");
+
+  const [creating, setCreating] =
+    useState(false);
 
   const loadDecisions = () => {
-    fetch(`http://localhost:3000/api/decisions?userId=${user?.uid}`)
+    if (!user) {
+      setDecisions([]);
+      setLoading(false);
+      return;
+    }
+
+    fetch(
+      `http://localhost:3000/api/decisions?userId=${user.uid}`
+    )
       .then((res) => res.json())
       .then((data) => setDecisions(data))
-      .catch((error) => console.error(error))
+      .catch((error) =>
+        console.error(error)
+      )
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
-    loadDecisions();
-  }, []);
+    if (user) {
+      loadDecisions();
+    }
+  }, [user]);
 
   const handleCreateDecision = async (
     event: FormEvent
   ) => {
     event.preventDefault();
-  
+
     if (!user) {
       alert("Debes iniciar sesión");
       return;
     }
-  
+
     if (!title.trim()) {
       alert("El título es obligatorio");
       return;
     }
-  
+
     setCreating(true);
-  
+
     try {
       const response = await fetch(
         "http://localhost:3000/api/decisions",
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type":
+              "application/json",
           },
           body: JSON.stringify({
             title,
@@ -65,20 +91,20 @@ export default function DecisionsPage() {
           }),
         }
       );
-  
+
       if (!response.ok) {
         throw new Error(
           "Error al crear decisión"
         );
       }
-  
+
       setTitle("");
       setDescription("");
-  
+
       loadDecisions();
     } catch (error) {
       console.error(error);
-  
+
       alert(
         "No se pudo crear la decisión"
       );
@@ -87,23 +113,33 @@ export default function DecisionsPage() {
     }
   };
 
-  const handleDeleteDecision = async (id: string) => {
-    const confirmDelete = confirm("¿Seguro que quieres eliminar esta decisión?");
+  const handleDeleteDecision = async (
+    id: string
+  ) => {
+    const confirmDelete = confirm(
+      "¿Seguro que quieres eliminar esta decisión?"
+    );
 
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/decisions/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/decisions/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) {
-        throw new Error("Error al eliminar");
+        throw new Error(
+          "Error al eliminar"
+        );
       }
 
       loadDecisions();
     } catch (error) {
       console.error(error);
+
       alert("No se pudo eliminar");
     }
   };
@@ -126,7 +162,8 @@ export default function DecisionsPage() {
             </h1>
 
             <p className="mt-3 text-slate-400">
-              Compara opciones y toma mejores decisiones.
+              Compara opciones y toma
+              mejores decisiones.
             </p>
           </div>
 
@@ -136,7 +173,10 @@ export default function DecisionsPage() {
                 {user.photoURL && (
                   <img
                     src={user.photoURL}
-                    alt={user.displayName || "Usuario"}
+                    alt={
+                      user.displayName ||
+                      "Usuario"
+                    }
                     className="h-11 w-11 rounded-full border border-slate-600"
                   />
                 )}
@@ -145,6 +185,7 @@ export default function DecisionsPage() {
                   <p className="text-sm font-semibold">
                     {user.displayName}
                   </p>
+
                   <p className="text-xs text-slate-400">
                     {user.email}
                   </p>
@@ -162,7 +203,8 @@ export default function DecisionsPage() {
                 onClick={loginWithGoogle}
                 className="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-500"
               >
-                Iniciar sesión con Google
+                Iniciar sesión con
+                Google
               </button>
             )}
           </div>
@@ -171,10 +213,14 @@ export default function DecisionsPage() {
         {!user ? (
           <div className="rounded-3xl border border-slate-700 bg-slate-800 p-10 text-center shadow-xl">
             <h2 className="text-2xl font-bold">
-              Inicia sesión para gestionar tus decisiones
+              Inicia sesión para
+              gestionar tus decisiones
             </h2>
+
             <p className="mt-3 text-slate-400">
-              Usa tu cuenta de Google para acceder a la aplicación.
+              Usa tu cuenta de Google
+              para acceder a la
+              aplicación.
             </p>
 
             <button
@@ -191,7 +237,12 @@ export default function DecisionsPage() {
                 Nueva decisión
               </h2>
 
-              <form onSubmit={handleCreateDecision} className="space-y-5">
+              <form
+                onSubmit={
+                  handleCreateDecision
+                }
+                className="space-y-5"
+              >
                 <div>
                   <label className="mb-2 block text-sm font-medium text-slate-300">
                     Título
@@ -199,7 +250,11 @@ export default function DecisionsPage() {
 
                   <input
                     value={title}
-                    onChange={(event) => setTitle(event.target.value)}
+                    onChange={(event) =>
+                      setTitle(
+                        event.target.value
+                      )
+                    }
                     placeholder="Ej: Elegir portátil"
                     className="w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-3 text-white outline-none transition focus:border-blue-500"
                   />
@@ -212,7 +267,11 @@ export default function DecisionsPage() {
 
                   <textarea
                     value={description}
-                    onChange={(event) => setDescription(event.target.value)}
+                    onChange={(event) =>
+                      setDescription(
+                        event.target.value
+                      )
+                    }
                     placeholder="Describe la decisión"
                     className="min-h-[120px] w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-3 text-white outline-none transition focus:border-blue-500"
                   />
@@ -223,7 +282,9 @@ export default function DecisionsPage() {
                   disabled={creating}
                   className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-500"
                 >
-                  {creating ? "Creando..." : "Crear decisión"}
+                  {creating
+                    ? "Creando..."
+                    : "Crear decisión"}
                 </button>
               </form>
             </div>
@@ -233,50 +294,65 @@ export default function DecisionsPage() {
                 Mis decisiones
               </h2>
 
-              {decisions.length === 0 ? (
+              {decisions.length ===
+              0 ? (
                 <div className="rounded-2xl border border-dashed border-slate-700 p-10 text-center text-slate-400">
-                  No hay decisiones todavía.
+                  No hay decisiones
+                  todavía.
                 </div>
               ) : (
                 <div className="grid gap-6 md:grid-cols-2">
-                  {decisions.map((decision) => (
-                    <div
-                      key={decision.id}
-                      className="rounded-3xl border border-slate-700 bg-slate-800 p-6 shadow-xl transition hover:-translate-y-1 hover:border-blue-500"
-                    >
-                      <div className="mb-4 flex items-start justify-between gap-4">
-                        <div>
-                          <h3 className="text-2xl font-bold">
-                            {decision.title}
-                          </h3>
+                  {decisions.map(
+                    (decision) => (
+                      <div
+                        key={
+                          decision.id
+                        }
+                        className="rounded-3xl border border-slate-700 bg-slate-800 p-6 shadow-xl transition hover:-translate-y-1 hover:border-blue-500"
+                      >
+                        <div className="mb-4 flex items-start justify-between gap-4">
+                          <div>
+                            <h3 className="text-2xl font-bold">
+                              {
+                                decision.title
+                              }
+                            </h3>
 
-                          <p className="mt-2 text-slate-400">
-                            {decision.description || "Sin descripción"}
-                          </p>
+                            <p className="mt-2 text-slate-400">
+                              {decision.description ||
+                                "Sin descripción"}
+                            </p>
+                          </div>
+
+                          <span className="rounded-full bg-slate-700 px-3 py-1 text-xs font-medium text-slate-300">
+                            {
+                              decision.status
+                            }
+                          </span>
                         </div>
 
-                        <span className="rounded-full bg-slate-700 px-3 py-1 text-xs font-medium text-slate-300">
-                          {decision.status}
-                        </span>
-                      </div>
+                        <div className="mt-6 flex items-center gap-3">
+                          <Link
+                            to={`/decisions/${decision.id}`}
+                            className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500"
+                          >
+                            Ver detalle
+                          </Link>
 
-                      <div className="mt-6 flex items-center gap-3">
-                        <Link
-                          to={`/decisions/${decision.id}`}
-                          className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500"
-                        >
-                          Ver detalle
-                        </Link>
-
-                        <button
-                          onClick={() => handleDeleteDecision(decision.id)}
-                          className="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500"
-                        >
-                          Eliminar
-                        </button>
+                          <button
+                            onClick={() =>
+                              handleDeleteDecision(
+                                decision.id
+                              )
+                            }
+                            className="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500"
+                          >
+                            Eliminar
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  )}
                 </div>
               )}
             </div>
