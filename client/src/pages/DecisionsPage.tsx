@@ -30,7 +30,9 @@ export default function DecisionsPage() {
     loadDecisions();
   }, []);
 
-  const handleCreateDecision = async (event: FormEvent) => {
+  const handleCreateDecision = async (
+    event: FormEvent
+  ) => {
     event.preventDefault();
 
     if (!title.trim()) {
@@ -41,16 +43,19 @@ export default function DecisionsPage() {
     setCreating(true);
 
     try {
-      const response = await fetch("http://localhost:3000/api/decisions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          description,
-        }),
-      });
+      const response = await fetch(
+        "http://localhost:3000/api/decisions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            description,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Error al crear decisión");
@@ -58,6 +63,7 @@ export default function DecisionsPage() {
 
       setTitle("");
       setDescription("");
+
       loadDecisions();
     } catch (error) {
       console.error(error);
@@ -67,15 +73,24 @@ export default function DecisionsPage() {
     }
   };
 
-  const handleDeleteDecision = async (id: string) => {
-    const confirmDelete = confirm("¿Seguro que quieres eliminar esta decisión?");
+  const handleDeleteDecision = async (
+    id: string
+  ) => {
+    const confirmDelete = confirm(
+      "¿Seguro que quieres eliminar esta decisión?"
+    );
 
-    if (!confirmDelete) return;
+    if (!confirmDelete) {
+      return;
+    }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/decisions/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/decisions/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Error al eliminar");
@@ -89,165 +104,140 @@ export default function DecisionsPage() {
   };
 
   if (loading) {
-    return <p style={{ padding: "30px" }}>Cargando...</p>;
+    return (
+      <p className="p-10 text-center text-lg">
+        Cargando...
+      </p>
+    );
   }
 
   return (
-    <div
-      style={{
-        padding: "40px",
-        fontFamily: "Arial",
-        maxWidth: "760px",
-        margin: "0 auto",
-      }}
-    >
-      <h1
-        style={{
-          fontSize: "48px",
-          textAlign: "center",
-          marginBottom: "10px",
-        }}
-      >
-        Decision Helper
-      </h1>
+    <div className="min-h-screen bg-slate-900 text-slate-100">
+      <div className="mx-auto max-w-5xl px-6 py-12">
+        <div className="mb-12 text-center">
+          <h1 className="text-6xl font-black tracking-tight">
+            Decision Helper
+          </h1>
 
-      <p
-        style={{
-          fontSize: "20px",
-          opacity: 0.8,
-          textAlign: "center",
-          marginBottom: "30px",
-        }}
-      >
-        Compara opciones y toma mejores decisiones.
-      </p>
-
-      <form
-        onSubmit={handleCreateDecision}
-        style={{
-          border: "1px solid #ddd",
-          padding: "30px",
-          borderRadius: "14px",
-          marginTop: "30px",
-          backgroundColor: "#16181f",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
-        }}
-      >
-        <h2 style={{ textAlign: "center" }}>Nueva decisión</h2>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label>Título</label>
-
-          <input
-            value={title}
-            onChange={(event) => setTitle(event.target.value)}
-            placeholder="Ej: Elegir portátil"
-            style={{
-              width: "100%",
-              boxSizing: "border-box",
-              padding: "12px",
-              marginTop: "6px",
-              borderRadius: "8px",
-              border: "1px solid #444",
-              backgroundColor: "#24262d",
-              color: "white",
-            }}
-          />
+          <p className="mt-4 text-lg text-slate-400">
+            Compara opciones y toma mejores
+            decisiones.
+          </p>
         </div>
 
-        <div style={{ marginBottom: "15px" }}>
-          <label>Descripción</label>
+        {/* formulario */}
+        <div className="rounded-3xl border border-slate-700 bg-slate-800 p-8 shadow-2xl">
+          <h2 className="mb-6 text-2xl font-bold">
+            Nueva decisión
+          </h2>
 
-          <textarea
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-            placeholder="Describe la decisión"
-            style={{
-              width: "100%",
-              boxSizing: "border-box",
-              padding: "12px",
-              marginTop: "6px",
-              borderRadius: "8px",
-              border: "1px solid #444",
-              backgroundColor: "#24262d",
-              color: "white",
-              minHeight: "90px",
-            }}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={creating}
-          style={{
-            padding: "10px 16px",
-            borderRadius: "8px",
-            border: "none",
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
-        >
-          {creating ? "Creando..." : "Crear decisión"}
-        </button>
-      </form>
-
-      <h2 style={{ marginTop: "40px", textAlign: "center" }}>Mis decisiones</h2>
-
-      {decisions.length === 0 ? (
-        <p style={{ textAlign: "center" }}>No hay decisiones todavía.</p>
-      ) : (
-        decisions.map((decision) => (
-          <div
-            key={decision.id}
-            style={{
-              border: "1px solid #ddd",
-              padding: "25px",
-              borderRadius: "14px",
-              marginTop: "20px",
-              backgroundColor: "#16181f",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.18)",
-            }}
+          <form
+            onSubmit={handleCreateDecision}
+            className="space-y-5"
           >
-            <h3 style={{ textAlign: "center", fontSize: "24px" }}>
-              {decision.title}
-            </h3>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-300">
+                Título
+              </label>
 
-            <p style={{ textAlign: "center", opacity: 0.85 }}>
-              {decision.description || "Sin descripción"}
-            </p>
-
-            <p style={{ textAlign: "center", fontSize: "14px", opacity: 0.7 }}>
-              Estado: {decision.status}
-            </p>
-
-            <div
-              style={{
-                marginTop: "15px",
-                display: "flex",
-                justifyContent: "center",
-                gap: "12px",
-                alignItems: "center",
-              }}
-            >
-              <Link to={`/decisions/${decision.id}`}>Ver detalle</Link>
-
-              <button
-                onClick={() => handleDeleteDecision(decision.id)}
-                style={{
-                  backgroundColor: "crimson",
-                  color: "white",
-                  border: "none",
-                  padding: "8px 12px",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                }}
-              >
-                Eliminar
-              </button>
+              <input
+                value={title}
+                onChange={(event) =>
+                  setTitle(event.target.value)
+                }
+                placeholder="Ej: Elegir portátil"
+                className="w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-3 text-white outline-none transition focus:border-blue-500"
+              />
             </div>
-          </div>
-        ))
-      )}
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-300">
+                Descripción
+              </label>
+
+              <textarea
+                value={description}
+                onChange={(event) =>
+                  setDescription(
+                    event.target.value
+                  )
+                }
+                placeholder="Describe la decisión"
+                className="min-h-[120px] w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-3 text-white outline-none transition focus:border-blue-500"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={creating}
+              className="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-500"
+            >
+              {creating
+                ? "Creando..."
+                : "Crear decisión"}
+            </button>
+          </form>
+        </div>
+
+        {/* lista */}
+        <div className="mt-14">
+          <h2 className="mb-6 text-3xl font-bold">
+            Mis decisiones
+          </h2>
+
+          {decisions.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-slate-700 p-10 text-center text-slate-400">
+              No hay decisiones todavía.
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2">
+              {decisions.map((decision) => (
+                <div
+                  key={decision.id}
+                  className="rounded-3xl border border-slate-700 bg-slate-800 p-6 shadow-xl transition hover:-translate-y-1 hover:border-blue-500"
+                >
+                  <div className="mb-4 flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="text-2xl font-bold">
+                        {decision.title}
+                      </h3>
+
+                      <p className="mt-2 text-slate-400">
+                        {decision.description ||
+                          "Sin descripción"}
+                      </p>
+                    </div>
+
+                    <span className="rounded-full bg-slate-700 px-3 py-1 text-xs font-medium text-slate-300">
+                      {decision.status}
+                    </span>
+                  </div>
+
+                  <div className="mt-6 flex items-center gap-3">
+                    <Link
+                      to={`/decisions/${decision.id}`}
+                      className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500"
+                    >
+                      Ver detalle
+                    </Link>
+
+                    <button
+                      onClick={() =>
+                        handleDeleteDecision(
+                          decision.id
+                        )
+                      }
+                      className="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

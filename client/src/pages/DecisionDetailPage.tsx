@@ -106,9 +106,7 @@ export default function DecisionDetailPage() {
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Error al crear criterio");
-      }
+      if (!response.ok) throw new Error("Error al crear criterio");
 
       setCriterionName("");
       setCriterionWeight(1);
@@ -142,9 +140,7 @@ export default function DecisionDetailPage() {
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Error al crear opción");
-      }
+      if (!response.ok) throw new Error("Error al crear opción");
 
       setOptionName("");
       setOptionDescription("");
@@ -178,9 +174,7 @@ export default function DecisionDetailPage() {
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Error al crear puntuación");
-      }
+      if (!response.ok) throw new Error("Error al crear puntuación");
 
       setScoreValue(1);
       refreshPageData();
@@ -191,21 +185,15 @@ export default function DecisionDetailPage() {
   };
 
   const handleDeleteCriterion = async (criterionId: string) => {
-    const confirmDelete = confirm("¿Eliminar este criterio?");
-
-    if (!confirmDelete) return;
+    if (!confirm("¿Eliminar este criterio?")) return;
 
     try {
       const response = await fetch(
         `http://localhost:3000/api/criteria/${criterionId}`,
-        {
-          method: "DELETE",
-        }
+        { method: "DELETE" }
       );
 
-      if (!response.ok) {
-        throw new Error("Error al eliminar criterio");
-      }
+      if (!response.ok) throw new Error("Error al eliminar criterio");
 
       refreshPageData();
     } catch (error) {
@@ -215,21 +203,15 @@ export default function DecisionDetailPage() {
   };
 
   const handleDeleteOption = async (optionId: string) => {
-    const confirmDelete = confirm("¿Eliminar esta opción?");
-
-    if (!confirmDelete) return;
+    if (!confirm("¿Eliminar esta opción?")) return;
 
     try {
       const response = await fetch(
         `http://localhost:3000/api/options/${optionId}`,
-        {
-          method: "DELETE",
-        }
+        { method: "DELETE" }
       );
 
-      if (!response.ok) {
-        throw new Error("Error al eliminar opción");
-      }
+      if (!response.ok) throw new Error("Error al eliminar opción");
 
       refreshPageData();
     } catch (error) {
@@ -239,331 +221,317 @@ export default function DecisionDetailPage() {
   };
 
   if (loading) {
-    return <p style={{ padding: "30px" }}>Cargando detalle...</p>;
+    return (
+      <div className="min-h-screen bg-slate-900 p-10 text-center text-slate-100">
+        Cargando detalle...
+      </div>
+    );
   }
 
   if (!decision) {
-    return <p>Decisión no encontrada</p>;
+    return (
+      <div className="min-h-screen bg-slate-900 p-10 text-center text-slate-100">
+        Decisión no encontrada
+      </div>
+    );
   }
 
   return (
-    <div style={{ padding: "40px", fontFamily: "Arial", maxWidth: "900px" }}>
-      <Link to="/">← Volver</Link>
+    <div className="min-h-screen bg-slate-900 text-slate-100">
+      <div className="mx-auto max-w-6xl px-6 py-10">
+        <Link to="/" className="text-sm font-medium text-blue-400 hover:text-blue-300">
+          ← Volver
+        </Link>
 
-      <h1>{decision.title}</h1>
-      <p>{decision.description}</p>
+        <header className="mt-8 rounded-3xl border border-slate-700 bg-gradient-to-br from-slate-800 to-slate-900 p-8 shadow-2xl">
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
+            <div>
+              <span className="rounded-full bg-blue-500/10 px-3 py-1 text-sm font-medium text-blue-300">
+                Decisión
+              </span>
 
-      <section
-        style={{
-          border: "1px solid #ddd",
-          padding: "20px",
-          borderRadius: "10px",
-          marginTop: "20px",
-        }}
-      >
-        <h2>Añadir criterio</h2>
+              <h1 className="mt-4 text-4xl font-black tracking-tight md:text-5xl">
+                {decision.title}
+              </h1>
 
-        <form onSubmit={handleCreateCriterion}>
-          <div style={{ marginBottom: "10px" }}>
-            <label>Nombre</label>
-            <br />
+              <p className="mt-3 max-w-2xl text-slate-400">
+                {decision.description || "Sin descripción"}
+              </p>
+            </div>
 
+            <div className="rounded-2xl border border-slate-700 bg-slate-950/60 p-5 text-center">
+              <p className="text-sm text-slate-400">Mejor opción</p>
+              <p className="mt-2 text-2xl font-bold text-emerald-400">
+                {results?.recommendedOption?.name || "Pendiente"}
+              </p>
+              <p className="mt-1 text-sm text-slate-500">
+                {results?.recommendedOption
+                  ? `${results.recommendedOption.totalScore} puntos`
+                  : "Añade opciones y puntuaciones"}
+              </p>
+            </div>
+          </div>
+        </header>
+
+        <section className="mt-8 grid gap-6 lg:grid-cols-3">
+          <form
+            onSubmit={handleCreateCriterion}
+            className="rounded-3xl border border-slate-700 bg-slate-800 p-6 shadow-xl"
+          >
+            <h2 className="text-xl font-bold">Añadir criterio</h2>
+            <p className="mt-1 text-sm text-slate-400">
+              Define qué aspectos vas a valorar.
+            </p>
+
+            <label className="mt-5 block text-sm font-medium text-slate-300">
+              Nombre
+            </label>
             <input
               value={criterionName}
               onChange={(event) => setCriterionName(event.target.value)}
               placeholder="Ej: Precio"
-              style={{
-                width: "100%",
-                padding: "10px",
-                boxSizing: "border-box",
-              }}
+              className="mt-2 w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-3 outline-none focus:border-blue-500"
             />
-          </div>
 
-          <div style={{ marginBottom: "10px" }}>
-            <label>Peso</label>
-            <br />
-
+            <label className="mt-4 block text-sm font-medium text-slate-300">
+              Peso
+            </label>
             <input
               type="number"
               min="1"
               max="10"
               value={criterionWeight}
-              onChange={(event) =>
-                setCriterionWeight(Number(event.target.value))
-              }
-              style={{
-                width: "100%",
-                padding: "10px",
-                boxSizing: "border-box",
-              }}
+              onChange={(event) => setCriterionWeight(Number(event.target.value))}
+              className="mt-2 w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-3 outline-none focus:border-blue-500"
             />
-          </div>
 
-          <button type="submit">Crear criterio</button>
-        </form>
-      </section>
+            <button className="mt-5 w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold transition hover:bg-blue-500">
+              Crear criterio
+            </button>
+          </form>
 
-      <section
-        style={{
-          border: "1px solid #ddd",
-          padding: "20px",
-          borderRadius: "10px",
-          marginTop: "20px",
-        }}
-      >
-        <h2>Añadir opción</h2>
+          <form
+            onSubmit={handleCreateOption}
+            className="rounded-3xl border border-slate-700 bg-slate-800 p-6 shadow-xl"
+          >
+            <h2 className="text-xl font-bold">Añadir opción</h2>
+            <p className="mt-1 text-sm text-slate-400">
+              Añade alternativas para comparar.
+            </p>
 
-        <form onSubmit={handleCreateOption}>
-          <div style={{ marginBottom: "10px" }}>
-            <label>Nombre</label>
-            <br />
-
+            <label className="mt-5 block text-sm font-medium text-slate-300">
+              Nombre
+            </label>
             <input
               value={optionName}
               onChange={(event) => setOptionName(event.target.value)}
               placeholder="Ej: Asus Zenbook"
-              style={{
-                width: "100%",
-                padding: "10px",
-                boxSizing: "border-box",
-              }}
+              className="mt-2 w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-3 outline-none focus:border-blue-500"
             />
-          </div>
 
-          <div style={{ marginBottom: "10px" }}>
-            <label>Descripción</label>
-            <br />
-
+            <label className="mt-4 block text-sm font-medium text-slate-300">
+              Descripción
+            </label>
             <textarea
               value={optionDescription}
               onChange={(event) => setOptionDescription(event.target.value)}
               placeholder="Ej: 16GB RAM, buena batería"
-              style={{
-                width: "100%",
-                padding: "10px",
-                boxSizing: "border-box",
-              }}
+              className="mt-2 min-h-[96px] w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-3 outline-none focus:border-blue-500"
             />
-          </div>
 
-          <button type="submit">Crear opción</button>
-        </form>
-      </section>
-
-      <section
-        style={{
-          border: "1px solid #ddd",
-          padding: "20px",
-          borderRadius: "10px",
-          marginTop: "20px",
-        }}
-      >
-        <h2>Añadir puntuación</h2>
-
-        {decision.options.length === 0 || decision.criteria.length === 0 ? (
-          <p>Necesitas al menos una opción y un criterio.</p>
-        ) : (
-          <form onSubmit={handleCreateScore}>
-            <div style={{ marginBottom: "10px" }}>
-              <label>Opción</label>
-              <br />
-
-              <select
-                value={selectedOptionId}
-                onChange={(event) => setSelectedOptionId(event.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  boxSizing: "border-box",
-                }}
-              >
-                <option value="">Selecciona una opción</option>
-
-                {decision.options.map((option) => (
-                  <option key={option.id} value={option.id}>
-                    {option.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div style={{ marginBottom: "10px" }}>
-              <label>Criterio</label>
-              <br />
-
-              <select
-                value={selectedCriterionId}
-                onChange={(event) =>
-                  setSelectedCriterionId(event.target.value)
-                }
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  boxSizing: "border-box",
-                }}
-              >
-                <option value="">Selecciona un criterio</option>
-
-                {decision.criteria.map((criterion) => (
-                  <option key={criterion.id} value={criterion.id}>
-                    {criterion.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div style={{ marginBottom: "10px" }}>
-              <label>Puntuación</label>
-              <br />
-
-              <input
-                type="number"
-                min="1"
-                max="10"
-                value={scoreValue}
-                onChange={(event) => setScoreValue(Number(event.target.value))}
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  boxSizing: "border-box",
-                }}
-              />
-            </div>
-
-            <button type="submit">Guardar puntuación</button>
-          </form>
-        )}
-      </section>
-
-      <h2>Criterios</h2>
-
-      {decision.criteria.length === 0 ? (
-        <p>No hay criterios todavía.</p>
-      ) : (
-        decision.criteria.map((criterion) => (
-          <div
-            key={criterion.id}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              border: "1px solid #333",
-              padding: "10px",
-              borderRadius: "8px",
-              marginTop: "10px",
-            }}
-          >
-            <span>
-              {criterion.name} - peso {criterion.weight}
-            </span>
-
-            <button
-              onClick={() => handleDeleteCriterion(criterion.id)}
-              style={{
-                backgroundColor: "crimson",
-                color: "white",
-                border: "none",
-                padding: "6px 10px",
-                borderRadius: "6px",
-                cursor: "pointer",
-              }}
-            >
-              Eliminar
+            <button className="mt-5 w-full rounded-xl bg-violet-600 px-4 py-3 font-semibold transition hover:bg-violet-500">
+              Crear opción
             </button>
-          </div>
-        ))
-      )}
+          </form>
 
-      <h2>Opciones</h2>
-
-      {decision.options.length === 0 ? (
-        <p>No hay opciones todavía.</p>
-      ) : (
-        decision.options.map((option) => (
-          <div
-            key={option.id}
-            style={{
-              border: "1px solid #ddd",
-              padding: "15px",
-              marginTop: "10px",
-              borderRadius: "10px",
-            }}
+          <form
+            onSubmit={handleCreateScore}
+            className="rounded-3xl border border-slate-700 bg-slate-800 p-6 shadow-xl"
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: "20px",
-              }}
-            >
-              <div>
-                <h3>{option.name}</h3>
-                <p>{option.description}</p>
+            <h2 className="text-xl font-bold">Añadir puntuación</h2>
+            <p className="mt-1 text-sm text-slate-400">
+              Puntúa una opción según un criterio.
+            </p>
+
+            {decision.options.length === 0 || decision.criteria.length === 0 ? (
+              <div className="mt-6 rounded-2xl border border-dashed border-slate-600 p-5 text-sm text-slate-400">
+                Necesitas al menos una opción y un criterio.
               </div>
-
-              <button
-                onClick={() => handleDeleteOption(option.id)}
-                style={{
-                  backgroundColor: "crimson",
-                  color: "white",
-                  border: "none",
-                  padding: "6px 10px",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                }}
-              >
-                Eliminar
-              </button>
-            </div>
-
-            <h4>Puntuaciones</h4>
-
-            {option.scores.length === 0 ? (
-              <p>Sin puntuaciones todavía.</p>
             ) : (
-              option.scores.map((score) => {
-                const criterion = decision.criteria.find(
-                  (c) => c.id === score.criterionId
-                );
+              <>
+                <label className="mt-5 block text-sm font-medium text-slate-300">
+                  Opción
+                </label>
+                <select
+                  value={selectedOptionId}
+                  onChange={(event) => setSelectedOptionId(event.target.value)}
+                  className="mt-2 w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-3 outline-none focus:border-blue-500"
+                >
+                  <option value="">Selecciona una opción</option>
+                  {decision.options.map((option) => (
+                    <option key={option.id} value={option.id}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
 
-                return (
-                  <p key={score.id}>
-                    {criterion?.name}: {score.value}
-                  </p>
-                );
-              })
+                <label className="mt-4 block text-sm font-medium text-slate-300">
+                  Criterio
+                </label>
+                <select
+                  value={selectedCriterionId}
+                  onChange={(event) => setSelectedCriterionId(event.target.value)}
+                  className="mt-2 w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-3 outline-none focus:border-blue-500"
+                >
+                  <option value="">Selecciona un criterio</option>
+                  {decision.criteria.map((criterion) => (
+                    <option key={criterion.id} value={criterion.id}>
+                      {criterion.name}
+                    </option>
+                  ))}
+                </select>
+
+                <label className="mt-4 block text-sm font-medium text-slate-300">
+                  Puntuación
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={scoreValue}
+                  onChange={(event) => setScoreValue(Number(event.target.value))}
+                  className="mt-2 w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-3 outline-none focus:border-blue-500"
+                />
+
+                <button className="mt-5 w-full rounded-xl bg-emerald-600 px-4 py-3 font-semibold transition hover:bg-emerald-500">
+                  Guardar puntuación
+                </button>
+              </>
+            )}
+          </form>
+        </section>
+
+        <section className="mt-8 grid gap-6 lg:grid-cols-2">
+          <div className="rounded-3xl border border-slate-700 bg-slate-800 p-6 shadow-xl">
+            <h2 className="text-2xl font-bold">Criterios</h2>
+
+            {decision.criteria.length === 0 ? (
+              <p className="mt-4 text-slate-400">No hay criterios todavía.</p>
+            ) : (
+              <div className="mt-5 space-y-3">
+                {decision.criteria.map((criterion) => (
+                  <div
+                    key={criterion.id}
+                    className="flex items-center justify-between rounded-2xl border border-slate-700 bg-slate-900 p-4"
+                  >
+                    <div>
+                      <p className="font-semibold">{criterion.name}</p>
+                      <p className="text-sm text-slate-400">
+                        Peso {criterion.weight}
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => handleDeleteCriterion(criterion.id)}
+                      className="rounded-xl bg-red-600 px-3 py-2 text-sm font-medium transition hover:bg-red-500"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
-        ))
-      )}
 
-      <h2>Resultado</h2>
+          <div className="rounded-3xl border border-slate-700 bg-slate-800 p-6 shadow-xl">
+            <h2 className="text-2xl font-bold">Ranking</h2>
 
-      {results?.recommendedOption ? (
-        <div
-          style={{
-            border: "2px solid green",
-            padding: "15px",
-            borderRadius: "10px",
-          }}
-        >
-          <strong>Opción recomendada:</strong>{" "}
-          {results.recommendedOption.name} con{" "}
-          {results.recommendedOption.totalScore} puntos
-        </div>
-      ) : (
-        <p>Todavía no hay resultado.</p>
-      )}
+            {results?.ranking.length ? (
+              <div className="mt-5 space-y-3">
+                {results.ranking.map((item, index) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between rounded-2xl border border-slate-700 bg-slate-900 p-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 font-bold">
+                        {index + 1}
+                      </span>
+                      <span className="font-semibold">{item.name}</span>
+                    </div>
 
-      <h3>Ranking</h3>
+                    <span className="font-bold text-emerald-400">
+                      {item.totalScore} pts
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-4 text-slate-400">Todavía no hay ranking.</p>
+            )}
+          </div>
+        </section>
 
-      {results?.ranking.map((item, index) => (
-        <p key={item.id}>
-          {index + 1}. {item.name} - {item.totalScore} puntos
-        </p>
-      ))}
+        <section className="mt-8 rounded-3xl border border-slate-700 bg-slate-800 p-6 shadow-xl">
+          <h2 className="text-2xl font-bold">Opciones</h2>
+
+          {decision.options.length === 0 ? (
+            <p className="mt-4 text-slate-400">No hay opciones todavía.</p>
+          ) : (
+            <div className="mt-6 grid gap-5 md:grid-cols-2">
+              {decision.options.map((option) => (
+                <div
+                  key={option.id}
+                  className="rounded-3xl border border-slate-700 bg-slate-900 p-5"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="text-xl font-bold">{option.name}</h3>
+                      <p className="mt-2 text-sm text-slate-400">
+                        {option.description || "Sin descripción"}
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => handleDeleteOption(option.id)}
+                      className="rounded-xl bg-red-600 px-3 py-2 text-sm font-medium transition hover:bg-red-500"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+
+                  <h4 className="mt-5 font-semibold text-slate-300">
+                    Puntuaciones
+                  </h4>
+
+                  {option.scores.length === 0 ? (
+                    <p className="mt-2 text-sm text-slate-500">
+                      Sin puntuaciones todavía.
+                    </p>
+                  ) : (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {option.scores.map((score) => {
+                        const criterion = decision.criteria.find(
+                          (c) => c.id === score.criterionId
+                        );
+
+                        return (
+                          <span
+                            key={score.id}
+                            className="rounded-full bg-slate-700 px-3 py-1 text-sm text-slate-200"
+                          >
+                            {criterion?.name}: {score.value}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   );
 }
